@@ -1,0 +1,1103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Campus Event Management & Crowd Prediction System - SE Documentation</title>
+    <style>
+        :root {
+            --bg: #050816;
+            --bg-elevated: #0b1020;
+            --accent: #38bdf8;
+            --accent-soft: rgba(56, 189, 248, 0.15);
+            --text-main: #f9fafb;
+            --text-muted: #9ca3af;
+            --border-subtle: rgba(148, 163, 184, 0.3);
+            --danger: #fb7185;
+            --success: #4ade80;
+            --warning: #facc15;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: radial-gradient(circle at top, #1e293b 0, #020617 45%, #000 100%);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+        }
+
+        .layout {
+            display: grid;
+            grid-template-columns: 280px minmax(0, 1fr);
+            width: 100%;
+            max-width: 1440px;
+            margin: 0 auto;
+        }
+
+        /* Sidebar navigation */
+        .sidebar {
+            position: sticky;
+            top: 0;
+            align-self: flex-start;
+            height: 100vh;
+            padding: 1.5rem 1.25rem;
+            background: linear-gradient(to bottom, rgba(15,23,42,0.98), rgba(15,23,42,0.92));
+            border-right: 1px solid var(--border-subtle);
+            overflow-y: auto;
+        }
+
+        .logo {
+            font-size: 1.1rem;
+            font-weight: 700;
+            letter-spacing: 0.09em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+
+        .project-name {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+        }
+
+        .nav-section-title {
+            font-size: 0.75rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin: 1.25rem 0 0.5rem;
+        }
+
+        .nav-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .nav-item {
+            margin-bottom: 0.25rem;
+        }
+
+        .nav-link {
+            display: block;
+            padding: 0.4rem 0.6rem;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            border-radius: 0.45rem;
+            border: 1px solid transparent;
+            transition: all 0.18s ease;
+        }
+
+        .nav-link:hover {
+            color: var(--text-main);
+            border-color: rgba(56, 189, 248, 0.35);
+            background: radial-gradient(circle at left, var(--accent-soft), transparent 55%);
+        }
+
+        .nav-link span {
+            font-size: 0.76rem;
+            text-transform: uppercase;
+            letter-spacing: 0.16em;
+            color: var(--accent);
+        }
+
+        /* Main content */
+        .content {
+            padding: 1.75rem 2.25rem 3rem;
+            overflow-y: auto;
+            max-height: 100vh;
+        }
+
+        .page-header {
+            margin-bottom: 1.75rem;
+            padding-bottom: 1.25rem;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.35);
+        }
+
+        .badge-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .badge {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.16em;
+            padding: 0.25rem 0.65rem;
+            border-radius: 999px;
+            border: 1px solid rgba(148, 163, 184, 0.5);
+            color: var(--text-muted);
+            background: rgba(15,23,42,0.7);
+        }
+
+        h1 {
+            font-size: 1.9rem;
+            margin: 0 0 0.35rem;
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 0.98rem;
+            max-width: 52rem;
+        }
+
+        .meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 0.9rem;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .meta span strong {
+            color: var(--text-main);
+        }
+
+        /* Generic section styling */
+        section {
+            margin-bottom: 1.75rem;
+        }
+
+        .section-card {
+            border-radius: 1rem;
+            border: 1px solid rgba(148, 163, 184, 0.4);
+            background: radial-gradient(circle at top left, rgba(15,118,110,0.23), rgba(15,23,42,0.96));
+            padding: 1.4rem 1.5rem 1.25rem;
+            box-shadow: 0 20px 45px rgba(15,23,42,0.9);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            margin: 0;
+        }
+
+        .section-tag {
+            font-size: 0.7rem;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: var(--accent);
+        }
+
+        .section-body {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: #e5e7eb;
+        }
+
+        .section-body p {
+            margin: 0 0 0.65rem;
+        }
+
+        .section-body ul {
+            margin: 0.25rem 0 0.5rem 1.25rem;
+            padding: 0;
+        }
+
+        .section-body li {
+            margin-bottom: 0.2rem;
+        }
+
+        .pill-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            margin-top: 0.4rem;
+        }
+
+        .pill {
+            padding: 0.15rem 0.55rem;
+            border-radius: 999px;
+            border: 1px solid rgba(148, 163, 184, 0.4);
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            background: rgba(15,23,42,0.9);
+        }
+
+        .highlight-box {
+            margin-top: 0.75rem;
+            border-radius: 0.75rem;
+            border: 1px dashed rgba(148, 163, 184, 0.6);
+            background: rgba(15,23,42,0.85);
+            padding: 0.7rem 0.85rem;
+            font-size: 0.9rem;
+        }
+
+        .highlight-box strong {
+            color: var(--accent);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 900px) {
+            body {
+                display: block;
+            }
+
+            .layout {
+                display: block;
+                max-width: 100%;
+            }
+
+            .sidebar {
+                position: static;
+                height: auto;
+                border-right: none;
+                border-bottom: 1px solid var(--border-subtle);
+            }
+
+            .content {
+                max-height: none;
+                padding: 1.25rem 1.4rem 2.4rem;
+            }
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 1.55rem;
+            }
+
+            .section-card {
+                padding: 1.1rem 1.1rem 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="layout">
+    <!-- Sidebar navigation -->
+    <aside class="sidebar">
+        <div class="logo">Ventixe Events · UOS</div>
+        <div class="project-name">Campus Event Management & Crowd Prediction System<br />SE Project – Group 8</div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Overview</div>
+            <ul class="nav-list">
+                <li class="nav-item"><a class="nav-link" href="#problem-statement"><span>01</span> Problem Statement</a></li>
+                <li class="nav-item"><a class="nav-link" href="#objectives"><span>02</span> Objectives</a></li>
+                <li class="nav-item"><a class="nav-link" href="#scope"><span>03</span> Scope</a></li>
+            </ul>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Later Sections</div>
+            <ul class="nav-list">
+                <li class="nav-item"><a class="nav-link" href="#requirements-functional"><span>04</span> Functional Requirements</a></li>
+                <li class="nav-item"><a class="nav-link" href="#requirements-nonfunctional"><span>05</span> Non-Functional</a></li>
+                <li class="nav-item"><a class="nav-link" href="#use-cases"><span>06</span> Use Cases &amp; Diagrams</a></li>
+               
+            </ul>
+        </div>
+    </aside>
+
+    <!-- Main scrollable content -->
+    <main class="content">
+        <header class="page-header">
+            <div class="badge-row">
+                <div class="badge">Software Engineering – Documentation</div>
+                <div class="badge">University of Sargodha (UOS)</div>
+            </div>
+            <h1>Campus Event Management & Crowd Prediction System</h1>
+            <p class="subtitle">
+                A centralized web-based platform (Ventixe Events) for managing campus events, student registrations,
+                ticketing, crowd prediction, and feedback, developed as a Software Engineering semester project.
+            </p>
+            <div class="meta">
+                <span><strong>Course:</strong> Software Engineering</span>
+                <span><strong>Group:</strong> 8 (Campus Event Management & Crowd Prediction System)</span>
+                <span><strong>Domain:</strong> Web Application · Event Management · AI/ML-based Prediction</span>
+            </div>
+        </header>
+
+        <!-- 1. Problem Statement -->
+        <section id="problem-statement">
+            <div class="section-card">
+                <div class="section-header">
+                    <h2 class="section-title">1. Problem Statement</h2>
+                    <div class="section-tag">Why this system is needed</div>
+                </div>
+                <div class="section-body">
+                    <p>
+                        Universities organize a large number of events throughout the academic year – seminars, workshops,
+                        sports events, society activities, orientations, job fairs, and cultural programs. In many campuses
+                        these events are still managed manually or with scattered tools (WhatsApp groups, posters,
+                        spreadsheets, separate Google forms). As a result, there is no <strong>single source of truth</strong>
+                        for upcoming events, registrations, venues, or expected crowd size.
+                    </p>
+                    <p>
+                        This leads to multiple practical problems for both administration and students:
+                    </p>
+                    <ul>
+                        <li>Event information is <strong>spread across different channels</strong>, so many students miss
+                            relevant events or receive updates very late.</li>
+                        <li>There is <strong>no centralized registration & attendance tracking</strong>, which makes it hard
+                            to know how many students actually attended a particular event.</li>
+                        <li>Event organizers cannot <strong>predict the expected crowd</strong>, so they may under-estimate
+                            or over-estimate required resources (venue size, chairs, refreshments, security, etc.).</li>
+                        <li>Without automated <strong>venue conflict detection</strong>, two or more events may
+                            accidentally be scheduled in the same hall at overlapping times.</li>
+                        <li>Students have <strong>no unified event calendar</strong> and cannot easily view all events
+                            relevant to them in one place.</li>
+                        <li>Feedback about events is often collected informally, so <strong>no structured event quality
+                            analysis</strong> is available for improvement.</li>
+                    </ul>
+                    <p>
+                        The lack of a centralized, intelligent event management system causes poor coordination,
+                        resource wastage, and a weak student experience. There is also no data-driven mechanism to
+                        <strong>predict and manage crowds</strong> at events.
+                    </p>
+                    <div class="highlight-box">
+                        <strong>Problem:</strong> UOS currently lacks a unified digital platform that can manage all campus
+                        events end-to-end (creation, registration, ticketing, venue allocation, attendance tracking) and
+                        intelligently <em>predict expected crowd size</em> so that administrators can plan resources and avoid
+                        conflicts.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. Objectives -->
+        <section id="objectives">
+            <div class="section-card">
+                <div class="section-header">
+                    <h2 class="section-title">2. Objectives</h2>
+                    <div class="section-tag">What the project aims to achieve</div>
+                </div>
+                <div class="section-body">
+                    <p>
+                        The main objective of the Campus Event Management & Crowd Prediction System (Ventixe Events) is
+                        to design and implement a <strong>centralized campus event portal</strong> that streamlines the entire
+                        lifecycle of campus events and provides basic AI/ML-based crowd prediction support.
+                    </p>
+                    <p>Specific objectives include:</p>
+                    <ul>
+                        <li>Provide a <strong>single web-based platform</strong> where students can discover, search, and
+                            register for all official campus events.</li>
+                        <li>Enable authorized users (organizers, staff, admins) to <strong>create, update, cancel, and
+                            manage events</strong> with proper categories, capacities, schedules, and venues.</li>
+                        <li>Implement <strong>student registration and ticket generation</strong> with QR codes to support
+                            attendance tracking at the venue gate.</li>
+                        <li>Design a simple <strong>crowd prediction module</strong> that uses historical booking/attendance
+                            data to estimate the expected number of attendees for upcoming events.</li>
+                        <li>Provide a <strong>notification and reminder system</strong> to send confirmations and reminders
+                            (e.g., email) to registered students.</li>
+                        <li>Detect <strong>venue conflicts</strong> when two events are planned for the same venue and time,
+                            and warn organizers before saving the event.</li>
+                        <li>Collect structured <strong>feedback and ratings</strong> from attendees after events to measure
+                            event quality and support future improvements.</li>
+                        <li>Offer <strong>basic reporting and analytics</strong> (event statistics, registrations,
+                            revenue, feedback summaries) for administrators.</li>
+                    </ul>
+                    <div class="pill-list">
+                        <span class="pill">Event Creation & Management</span>
+                        <span class="pill">Student Registration & Attendance</span>
+                        <span class="pill">Crowd Prediction (AI/ML)</span>
+                        <span class="pill">Notifications & Reminders</span>
+                        <span class="pill">Venue Conflict Detection</span>
+                        <span class="pill">Feedback & Rating</span>
+                        <span class="pill">Reporting & Analytics</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. Scope -->
+        <section id="scope">
+            <div class="section-card">
+                <div class="section-header">
+                    <h2 class="section-title">3. Scope</h2>
+                    <div class="section-tag">What is included and excluded</div>
+                </div>
+                <div class="section-body">
+                    <p>
+                        This project covers the complete workflow for managing campus events at the University of Sargodha
+                        from the perspective of students, organizers, staff, managers, and administrators. The scope is
+                        defined in terms of <strong>included</strong> and <strong>excluded</strong> features to keep the
+                        system realistic for a semester project while still addressing the main problem.
+                    </p>
+                    <p><strong>In-Scope Functionality</strong></p>
+                    <ul>
+                        <li>Web-based portal for listing all campus events with categories, dates, venues, and details.</li>
+                        <li>Role-based user accounts (student, organizer, staff, manager, admin) with authentication and
+                            basic profile management.</li>
+                        <li>Event creation, editing, deletion, status management (draft, active, completed, cancelled,
+                            postponed).</li>
+                        <li>Online student <strong>event registration and booking</strong> with capacity checks and
+                            duplicate registration prevention.</li>
+                        <li>Ticket management: automatic ticket and QR code generation for confirmed registrations.</li>
+                        <li>Basic <strong>crowd prediction</strong> based on historical booking/attendance data.
+                        </li>
+                        <li>Notification and reminder flows for important actions (registration confirmation, event
+                            reminders – subject to technical limitations).</li>
+                        <li>Venue information storage and simple <strong>venue conflict detection</strong> at event
+                            creation time.</li>
+                        <li>Feedback and rating collection for completed events, with summary analytics for admins.</li>
+                        <li>Admin dashboard with key statistics and overview of events, bookings, and financial metrics.</li>
+                    </ul>
+
+                    <p><strong>Out-of-Scope / Limitations</strong></p>
+                    <ul>
+                        <li>Full-scale production-grade AI/ML model training and deployment (a simplified prototype
+                            prediction mechanism is used instead).</li>
+                        <li>Integration with external payment gateways (online payments can be simulated or treated as
+                            free events for this SE project).</li>
+                        <li>Native mobile applications (only a responsive web interface is targeted).</li>
+                        <li>Complex real-time IoT-based crowd monitoring (e.g., sensors, cameras). Only data from
+                            the web system itself is considered.</li>
+                        <li>Enterprise-level multi-campus support; the system is designed primarily for <strong>one
+                            campus (UOS)</strong>.</li>
+                    </ul>
+
+                    <div class="highlight-box">
+                        <strong>Scope Summary:</strong> The system delivers an end-to-end <em>campus event lifecycle</em>
+                        (from announcement to feedback) plus a basic ML-powered crowd prediction feature, implemented as a
+                        web application suitable for a Software Engineering semester project.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. Functional Requirements -->
+        <section id="requirements-functional">
+            <div class="section-card">
+                <div class="section-header">
+                    <h2 class="section-title">4. Functional Requirements</h2>
+                    <div class="section-tag">What the system shall do</div>
+                </div>
+                <div class="section-body">
+                    <p>
+                        This section summarizes the main functional requirements specified in the separate
+                        <em>Software Requirements Specification (SRS)</em> document for the Campus Event Management &amp;
+                        Crowd Prediction System. Requirements are grouped by module.
+                    </p>
+
+                    <p><strong>4.1 Event Management Module</strong></p>
+                    <ul>
+                        <li>System shall allow authorized users (admin, manager, organizer) to <strong>create</strong>,
+                            <strong>edit</strong>, and <strong>delete</strong> events with all required details
+                            (title, description, dates, category, capacity, venue, image, etc.).</li>
+                        <li>System shall support <strong>event status management</strong> (draft, active, completed,
+                            cancelled, postponed) and display status to users.</li>
+                        <li>System shall categorize events into seminars, workshops, sports, society activities,
+                            orientations, and other types.</li>
+                        <li>System shall enforce <strong>capacity limits</strong> for each event and prevent
+                            over-booking.</li>
+                        <li>System shall support <strong>event search and filtering</strong> by title, description,
+                            category, status, and date.</li>
+                        <li>System shall provide multiple event listing views (grid, list, and a basic calendar view).</li>
+                        <li>System shall display a <strong>detailed event page</strong> with full information and
+                            registration actions for students.</li>
+                        <li>System shall highlight <strong>featured or upcoming events</strong> on the landing page.</li>
+                    </ul>
+
+                    <p><strong>4.2 User Management Module</strong></p>
+                    <ul>
+                        <li>System shall allow <strong>students to register</strong> accounts using email, password,
+                            student ID, name, department, and phone.</li>
+                        <li>System shall provide separate <strong>login</strong> functionality for students and admins.</li>
+                        <li>System shall <strong>verify student email addresses</strong> using a one-time verification
+                            code.</li>
+                        <li>System shall <strong>hash and store passwords securely</strong> (bcrypt-based in the
+                            implementation).</li>
+                        <li>System shall implement <strong>role-based access control</strong> for roles including
+                            student, admin, manager, organizer, and staff.</li>
+                        <li>System shall manage user sessions securely and automatically expire them after inactivity.</li>
+                        <li>System shall allow users to <strong>view their profile</strong> information (profile update
+                            may be partially available).</li>
+                        <li>Admin shall be able to <strong>view and manage all registered users</strong> (e.g., list of
+                            students).</li>
+                    </ul>
+
+                    <p><strong>4.3 Registration &amp; Booking Module</strong></p>
+                    <ul>
+                        <li>Students shall be able to <strong>register for events</strong> directly from the event
+                            details page (one-click registration).</li>
+                        <li>System shall <strong>prevent duplicate registrations</strong> for the same event by the same
+                            student.</li>
+                        <li>System shall check <strong>event capacity</strong> before confirming a registration.</li>
+                        <li>System shall maintain booking status (pending, confirmed, cancelled) and allow admin/staff
+                            to manage bookings in an admin interface.</li>
+                        <li>Students shall be able to <strong>view their booking history</strong> in a dedicated page.</li>
+                        <li>Admin/staff shall be able to <strong>view and filter all bookings</strong> by event and
+                            status.</li>
+                    </ul>
+
+                    <p><strong>4.4 Ticket Management Module</strong></p>
+                    <ul>
+                        <li>For each confirmed booking, system shall automatically <strong>generate a ticket</strong>
+                            with a unique ticket code.</li>
+                        <li>System shall generate a <strong>QR code</strong> for each ticket, encoding ticket and user
+                            information.</li>
+                        <li>Students shall be able to <strong>view their tickets</strong> (including QR codes) from the
+                            portal.</li>
+                        <li>System shall support <strong>download/print view</strong> of tickets (at least as a
+                            web-printable page; full PDF export may be partial).</li>
+                        <li>System is intended to support <strong>ticket validation and check-in</strong> at the event
+                            gate (using QR scanning) to mark attendance.</li>
+                    </ul>
+
+                    <p><strong>4.5 Crowd Prediction Module (AI/ML Component)</strong></p>
+                    <ul>
+                        <li>System shall <strong>collect historical attendance/booking data</strong> for past events and
+                            store it for analysis.</li>
+                        <li>System shall provide a mechanism to <strong>predict expected attendance</strong> for a new
+                            event using a simple ML-based or rule-based model.</li>
+                        <li>System shall be able to <strong>analyze factors</strong> that influence attendance
+                            (e.g., event category, time, date, type).</li>
+                        <li>System shall <strong>display predicted attendance</strong> to organizers/admins on the event
+                            management interface.</li>
+                        <li>System aims to track <strong>prediction accuracy</strong> by comparing predicted values with
+                            actual attendance after the event.</li>
+                        <li>System shall use prediction results to provide <strong>resource recommendations</strong>
+                            (venue size, staff, etc.) at least at a basic level.</li>
+                    </ul>
+
+                    <p><strong>4.6 Notification &amp; Reminder Module</strong></p>
+                    <ul>
+                        <li>System shall support <strong>email notifications</strong> using an external SMTP or email
+                            service.</li>
+                        <li>System shall be able to send <strong>registration confirmations</strong> to students after
+                            successful booking.</li>
+                        <li>System shall send <strong>event reminders</strong> before an event (e.g., one day or one
+                            hour before start time), based on configuration.</li>
+                        <li>System shall send <strong>update and cancellation notifications</strong> when event details
+                            are changed by organizers/admins.</li>
+                        <li>System may support additional channels (push/SMS) conceptually, but these are
+                            implementation-dependent.</li>
+                    </ul>
+
+                    <p><strong>4.7 Venue Management Module</strong></p>
+                    <ul>
+                        <li>System shall maintain a basic <strong>venue database</strong> (halls, grounds, rooms) with
+                            information such as name, capacity, and location.</li>
+                        <li>System shall use venue information during <strong>event creation</strong> to associate each
+                            event with a specific venue.</li>
+                        <li>System shall perform <strong>venue conflict detection</strong> to avoid overlapping events in
+                            the same venue and time slot.</li>
+                        <li>System is designed to support a <strong>venue availability calendar</strong> so organizers
+                            can see when a venue is free or booked.</li>
+                    </ul>
+
+                    <p><strong>4.8 Feedback &amp; Rating Module</strong></p>
+                    <ul>
+                        <li>Students (and optionally guests) shall be able to <strong>submit feedback</strong> for events
+                            they attended.</li>
+                        <li>System shall support <strong>1–5 star ratings</strong> along with text comments.</li>
+                        <li>System shall allow <strong>anonymous feedback</strong> submission for public visitors (no
+                            login required) where configured.</li>
+                        <li>System shall provide admins with a <strong>feedback analytics view</strong> to study event
+                            quality and comments.</li>
+                    </ul>
+
+                    <p><strong>4.9 Reporting &amp; Analytics Module</strong></p>
+                    <ul>
+                        <li>System shall provide an <strong>admin dashboard</strong> with key metrics (number of events,
+                            registrations, revenue, etc.).</li>
+                        <li>System shall display <strong>registration trends</strong> over a recent time window.</li>
+                        <li>System shall provide <strong>financial statistics</strong> for events (if ticket pricing is
+                            enabled).</li>
+                        <li>System shall generate <strong>event performance reports</strong> (attendance, feedback,
+                            revenue) and basic <strong>student statistics</strong>.</li>
+                    </ul>
+
+                    <p><strong>4.10 Administrative Module</strong></p>
+                    <ul>
+                        <li>System shall provide a <strong>central admin dashboard</strong> for managing events, users,
+                            bookings, gallery, invoices, and messages.</li>
+                        <li>Admin shall be able to <strong>configure core settings</strong> of the system (within the
+                            limitations of the project implementation).</li>
+                        <li>Admin shall manage <strong>roles and permissions</strong> for different users.</li>
+                        <li>System design includes concepts of <strong>audit logging</strong> and <strong>backup &amp;
+                            restore</strong> of data for reliability (implementation may be partial).</li>
+                    </ul>
+
+                    <div class="highlight-box">
+                        <strong>Note:</strong> For each module above, the detailed SRS lists individual requirement IDs
+                        (e.g., FR-EV-001, FR-UM-001). This documentation provides a <em>condensed summary</em> suitable
+                        for project reports and presentations.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. Non-Functional Requirements -->
+        <section id="requirements-nonfunctional">
+            <div class="section-card">
+                <div class="section-header">
+                    <h2 class="section-title">5. Non-Functional Requirements</h2>
+                    <div class="section-tag">Quality attributes of the system</div>
+                </div>
+                <div class="section-body">
+                    <p>
+                        Non-functional requirements describe the <strong>quality attributes</strong> of the system such
+                        as performance, security, usability, reliability, scalability, and maintainability.
+                    </p>
+
+                    <p><strong>5.1 Performance</strong></p>
+                    <ul>
+                        <li>Pages should generally <strong>load within 3 seconds</strong> under normal network
+                            conditions.</li>
+                        <li>API endpoints should respond within approximately <strong>2 seconds</strong> for normal
+                            workloads.</li>
+                        <li>Database queries should be <strong>optimized using indexes</strong> on frequently accessed
+                            fields.</li>
+                        <li>System should handle around <strong>100 concurrent users</strong> (for university-scale
+                            usage) with connection pooling.</li>
+                        <li>Frequent data (like event lists) should use <strong>caching</strong> and
+                            <strong>pagination</strong> to reduce server load.</li>
+                    </ul>
+
+                    <p><strong>5.2 Security</strong></p>
+                    <ul>
+                        <li>All user passwords must be <strong>encrypted (hashed)</strong> using an industry-standard
+                            algorithm (bcrypt).</li>
+                        <li>System shall secure sessions using <strong>HTTP-only cookies</strong> and appropriate
+                            SameSite settings to mitigate hijacking.</li>
+                        <li>All input must be <strong>validated and sanitized</strong> to prevent SQL/NoSQL injection,
+                            XSS, and other injection attacks.</li>
+                        <li>System shall enforce <strong>role-based access control</strong> so only authorized roles can
+                            access admin/management features.</li>
+                        <li>System design recommends <strong>CSRF protection</strong>, <strong>HTTPS enforcement</strong>
+                            in production, and <strong>security headers</strong> for deployment.</li>
+                    </ul>
+
+                    <p><strong>5.3 Usability</strong></p>
+                    <ul>
+                        <li>System shall provide a <strong>responsive UI</strong> that works on desktops, tablets, and
+                            mobile devices.</li>
+                        <li>Navigation should be <strong>intuitive and consistent</strong>, with clear menus for
+                            students and admins.</li>
+                        <li>Error and success messages should be <strong>clear and helpful</strong>, guiding the user to
+                            correct mistakes.</li>
+                        <li>System should use semantic HTML and basic accessibility practices; full WCAG compliance may
+                            be a future enhancement.</li>
+                    </ul>
+
+                    <p><strong>5.4 Reliability</strong></p>
+                    <ul>
+                        <li>System shall handle errors <strong>gracefully</strong> and show user-friendly error pages.</li>
+                        <li>System shall ensure <strong>data integrity</strong> using unique keys and validation rules</li>
+                        <li>Database connections should be <strong>recoverable</strong> if temporary failures occur.</li>
+                        <li>Important events and errors should be <strong>logged</strong> for debugging and auditing (at
+                            least at a basic level in this project).</li>
+                    </ul>
+
+                    <p><strong>5.5 Scalability</strong></p>
+                    <ul>
+                        <li>Application architecture should be sufficiently <strong>modular and stateless</strong> to
+                            support horizontal scaling in future deployments.</li>
+                        <li>The database (MongoDB) is chosen to handle <strong>growing data volume</strong> with indexes
+                            and connection pooling.</li>
+                    </ul>
+
+                    <p><strong>5.6 Maintainability</strong></p>
+                    <ul>
+                        <li>Codebase should be <strong>well-organized</strong> into modules (blueprints, services,
+                            utilities) with a clear folder structure.</li>
+                        <li>Configuration should be <strong>externalized</strong> using configuration files and
+                            environment variables.</li>
+                        <li>Version control (<strong>Git</strong>) should be used for tracking changes.</li>
+                    </ul>
+
+                    <p><strong>5.7 Compatibility &amp; Availability</strong></p>
+                    <ul>
+                        <li>System should work on modern web browsers (Chrome, Firefox, Edge, etc.) with
+                            <strong>responsive design</strong> for mobile browsers.</li>
+                        <li>For the scope of the SE project, high availability is not enterprise-grade but the system
+                            should be <strong>stable and usable</strong> during academic usage and demos.</li>
+                    </ul>
+
+                    <div class="highlight-box">
+                        <strong>Summary:</strong> The non-functional requirements ensure that Ventixe Events is not only
+                        functionally correct but also reasonably <em>fast, secure, usable, and maintainable</em> for a
+                        university-scale deployment.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. Use Cases & Diagrams -->
+        <section id="use-cases">
+            <div class="section-card">
+                <div class="section-header">
+                    <h2 class="section-title">6. Use Cases &amp; Use Case Diagrams</h2>
+                    <div class="section-tag">Functional view from the user perspective</div>
+                </div>
+                <div class="section-body">
+                    <p>
+                        This section describes <strong>who uses the system</strong> (actors), <strong>what they can do</strong>
+                        (use cases), and which <strong>UML use case diagrams</strong> have been prepared for the project.
+                        Details are based on the <em>Use Cases Specification</em> document.
+                    </p>
+
+                    <p><strong>6.1 System Actors</strong></p>
+                    <ul>
+                        <li><strong>Guest / Visitor:</strong> Unauthenticated user who can browse events, view details,
+                            and submit public feedback.</li>
+                        <li><strong>Student:</strong> Registered user who can manage profile, register for events, view
+                            bookings and tickets, and give feedback.</li>
+                        <li><strong>Event Organizer:</strong> User responsible for creating and managing events,
+                            monitoring registrations, and viewing event analytics.</li>
+                        <li><strong>Staff Member:</strong> Operational staff who manage approvals, check-in attendees,
+                            and generate event/attendance reports.</li>
+                        <li><strong>Manager:</strong> Higher-level user who focuses on financial reports, venue
+                            management, and overall event statistics.</li>
+                        <li><strong>System Administrator (Admin):</strong> Super-user who manages users, roles, system
+                            settings, categories, and overall system health.</li>
+                        <li><strong>System / External Services:</strong> Automated actors such as the Email System,
+                            ML Prediction Engine, and QR Scanner.</li>
+                    </ul>
+
+                    <p><strong>6.2 Main Use Cases (High-Level)</strong></p>
+                    <p>
+                        The complete use case document defines over 100 detailed use cases. For overview diagrams and
+                        presentations, the following <strong>core use cases</strong> are emphasized:
+                    </p>
+                    <ul>
+                        <li><strong>Account &amp; Access:</strong> Register Student Account, Login, Logout, View/Edit
+                            Profile, Verify Email, Change/Reset Password.</li>
+                        <li><strong>Event Discovery:</strong> View Events, Search/Filter Events, View Event Details,
+                            View Event Calendar, View Featured Events.</li>
+                        <li><strong>Registration &amp; Booking:</strong> Register for Event, Cancel Registration, View My
+                            Bookings, Approve/Reject Registration, View All Registrations.</li>
+                        <li><strong>Ticketing:</strong> Generate Ticket, Generate QR Code, View Tickets,
+                            Download/Print Ticket, Validate Ticket, Scan QR (Check-in).</li>
+                        <li><strong>Crowd Prediction:</strong> Collect Historical Data, Train Prediction Model,
+                            Predict Attendance, Display Prediction, Track Prediction Accuracy, Recommend Resources.</li>
+                        <li><strong>Venue &amp; Conflict Management:</strong> Add/Edit/Delete Venue, Check Venue
+                            Availability, Detect Venue Conflict, Book Venue, View Venue Calendar.</li>
+                        <li><strong>Notification &amp; Reminder:</strong> Send Registration Confirmation, Send Event
+                            Reminder, Send Update/Cancellation Notification, Send Announcements.</li>
+                        <li><strong>Feedback &amp; Rating:</strong> Submit Feedback, Rate Event, View Feedback,
+                            View Feedback Analytics, Moderate Feedback.</li>
+                        <li><strong>Reporting &amp; Administration:</strong> View Dashboard, Generate Reports,
+                            Export Reports, Manage User Accounts, Assign Roles, Configure System Settings.</li>
+                    </ul>
+
+                    <p><strong>6.3 Use Case Diagrams Prepared</strong></p>
+                    <p>
+                        According to the project guidelines, the following <strong>UML use case diagrams</strong> are
+                        required. Each diagram groups related use cases and actors:
+                    </p>
+                    <ul>
+                        <li>System Overview (Main) Use Case Diagram</li>
+                        <li>Authentication &amp; User Management Use Case Diagram</li>
+                        <li>Event Management Use Case Diagram</li>
+                        <li>Registration &amp; Booking Use Case Diagram</li>
+                        <li>Ticket Management Use Case Diagram</li>
+                        <li>Crowd Prediction (AI/ML) Use Case Diagram</li>
+                        <li>Venue Management &amp; Conflict Detection Use Case Diagram</li>
+                        <li>Notification &amp; Reminder Use Case Diagram</li>
+                        <li>Feedback &amp; Rating Use Case Diagram</li>
+                        <li>Reporting &amp; Analytics Use Case Diagram</li>
+                    </ul>
+
+                    <div class="highlight-box">
+                        <strong>Diagram Storage:</strong> Place exported images of your use case diagrams in
+                        <code>New folder/use_cases/</code> (e.g., PNG or JPG). The placeholders below will display them
+                        automatically once the files are present.
+                    </div>
+
+                    <p><strong>6.4 Use Case Diagram Gallery (Placeholders)</strong></p>
+                    <p>The following image slots are reserved for the final UML use case diagrams:</p>
+                    <ul>
+                        <li>
+                            <strong>System Overview Use Case Diagram</strong><br />
+                            <img src="diagrams/use_cases/system_overview_usecase.png" alt="System Overview Use Case Diagram" style="max-width:100%; margin-top:0.35rem; border-radius:0.5rem; border:1px solid rgba(148,163,184,0.5);" />
+                        </li>
+                        <li>
+                            <strong>Authentication &amp; User Management Use Case Diagram</strong><br />
+                            <img src="diagrams/use_cases/authentication_usecase.png" alt="Authentication &amp; User Management Use Case Diagram" style="max-width:100%; margin-top:0.35rem; border-radius:0.5rem; border:1px solid rgba(148,163,184,0.5);" />
+                        </li>
+                        <li>
+                            <strong>Event Management Use Case Diagram</strong><br />
+                            <img src="diagrams/use_cases/event_management_usecase.png" alt="Event Management Use Case Diagram" style="max-width:100%; margin-top:0.35rem; border-radius:0.5rem; border:1px solid rgba(148,163,184,0.5);" />
+                        </li>
+                        <li>
+                            <strong>Registration &amp; Booking Use Case Diagram</strong><br />
+                            <img src="diagrams/use_cases/registration_booking_usecase.png" alt="Registration &amp; Booking Use Case Diagram" style="max-width:100%; margin-top:0.35rem; border-radius:0.5rem; border:1px solid rgba(148,163,184,0.5);" />
+                        </li>
+                        <li>
+                            <strong>Ticket Management Use Case Diagram</strong><br />
+                            <img src="diagrams/use_cases/ticket_management_usecase.png" alt="Ticket Management Use Case Diagram" style="max-width:100%; margin-top:0.35rem; border-radius:0.5rem; border:1px solid rgba(148,163,184,0.5);" />
+                        </li>
+                        <li>
+                            <strong>Crowd Prediction (AI/ML) Use Case Diagram</strong><br />
+                            <img src="diagrams/use_cases/crowd_prediction_usecase.png" alt="Crowd Prediction Use Case Diagram" style="max-width:100%; margin-top:0.35rem; border-radius:0.5rem; border:1px solid rgba(148,163,184,0.5);" />
+                        </li>
+                        <li>
+                            <strong>Venue Management &amp; Conflict Detection Use Case Diagram</strong><br />
+                            <img src="diagrams/use_cases/venue_management_usecase.png" alt="Venue Management &amp; Conflict Detection Use Case Diagram" style="max-width:100%; margin-top:0.35rem; border-radius:0.5rem; border:1px solid rgba(148,163,184,0.5);" />
+                        </li>
+                        <li>
+                            <strong>Notification &amp; Reminder Use Case Diagram</strong><br />
+                            <img src="diagrams/use_cases/notification_usecase.png" alt="Notification &amp; Reminder Use Case Diagram" style="max-width:100%; margin-top:0.35rem; border-radius:0.5rem; border:1px solid rgba(148,163,184,0.5);" />
+                        </li>
+                        <li>
+                            <strong>Feedback &amp; Rating Use Case Diagram</strong><br />
+                            <img src="diagrams/use_cases/feedback_rating_usecase.png" alt="Feedback &amp; Rating Use Case Diagram" style="max-width:100%; margin-top:0.35rem; border-radius:0.5rem; border:1px solid rgba(148,163,184,0.5);" />
+                        </li>
+                        <li>
+                            <strong>Reporting &amp; Analytics Use Case Diagram</strong><br />
+                            <img src="diagrams/use_cases/reporting_analytics_usecase.png" alt="Reporting &amp; Analytics Use Case Diagram" style="max-width:100%; margin-top:0.35rem; border-radius:0.5rem; border:1px solid rgba(148,163,184,0.5);" />
+                        </li>
+                    </ul>
+
+                    <p><strong>6.5 Activity Diagrams</strong></p>
+                    <p>
+                        Activity diagrams describe the <strong>workflow</strong> of key processes such as student
+                        registration, user login, event creation, event registration, ticket generation and check-in,
+                        crowd prediction, notification sending, and report generation. They use initial/final nodes,
+                        actions, decisions, and swim lanes for responsibilities.
+                    </p>
+                    <p>All activity diagrams are stored under <code>diagrams/activity/</code>:</p>
+                    <ul>
+                        <li>
+                            <strong>Student Registration Activity Diagram</strong><br />
+                            <img src="diagrams/activity/Student_Registration_Activity.png" alt="Student Registration Activity Diagram" style="max-width:100%; margin-top:0.35rem; border-radius:0.5rem; border:1px solid rgba(148,163,184,0.5);" />
+                        </li>
+                        <li>
+                            <strong>User Login Activity Diagram</strong><br />
+                            <img src="diagrams/activity/User_Login_Activity.png" alt="User Login Activity Diagram" style="max-width:100%; margin-top:0.35rem; border-radius:0.5rem; border:1px solid rgba(148,163,184,0.5);" />
+                        </li>
+                        <li>
+                            <strong>Event Creation Activity Diagram</strong><br />
+                            <img src="diagrams/activity/Event_Creation_Activity.png" alt="Event Creation Activity Diagram" style="max-width:100%; margin-top:0.35rem; border-radius:0.5rem; border:1px solid rgba(148,163,184,0.5);" />
+                        </li>
+                        <li>
+                            <strong>Event Registration Activity Diagram</strong><br />
+                            <img src="diagrams/activity/Event_Registration_Activity.png" alt="Event Registration Activity Diagram" style="max-width:100%; margin-top:0.35rem; border-radius:0.5rem; border:1px solid rgba(148,163,184,0.5);" />
+                        </li>
+                        <li>
+                            <strong>Booking Approval Activity Diagram</strong><br />
+                            <img src="diagrams/activity/Booking_Approval_Activity.png" alt="Booking Approval Activity Diagram" style="max-width:100%; margin-top:0.35rem; border-radius:0.5rem; border:1px solid rgba(148,163,184,0.5);" />
+                        </li>
+                        <li>
+                            <strong>Ticket Check-in Activity Diagram</strong><br />
+                            <img src="diagrams/activity/Ticket_Checkin_Activity.png" alt="Ticket Check-in Activity Diagram" style="max-width:100%; margin-top:0.35rem; border-radius:0.5rem; border:1px solid rgba(148,163,184,0.5);" />
+                        </li>
+                        <li>
+                            <strong>Crowd Prediction Activity Diagram</strong><br />
+                            <img src="diagrams/activity/Crowd_Prediction_Activity.png" alt="Crowd Prediction Activity Diagram" style="max-width:100%; margin-top:0.35rem; border-radius:0.5rem; border:1px solid rgba(148,163,184,0.5);" />
+                        </li>
+                        <li>
+                            <strong>Venue Conflict Detection Activity Diagram</strong><br />
+                            <img src="diagrams/activity/Venue_Conflict_Detection_Activity.png" alt="Venue Conflict Detection Activity Diagram" style="max-width:100%; margin-top:0.35rem; border-radius:0.5rem; border:1px solid rgba(148,163,184,0.5);" />
+                        </li>
+                        <li>
+                            <strong>Feedback Submission Activity Diagram</strong><br />
+                            <img src="diagrams/activity/Feedback_Submission_Activity.png" alt="Feedback Submission Activity Diagram" style="max-width:100%; margin-top:0.35rem; border-radius:0.5rem; border:1px solid rgba(148,163,184,0.5);" />
+                        </li>
+                        <li>
+                            <strong>Report Generation Activity Diagram</strong><br />
+                            <img src="diagrams/activity/Report_Generation_Activity.png" alt="Report Generation Activity Diagram" style="max-width:100%; margin-top:0.35rem; border-radius:0.5rem; border:1px solid rgba(148,163,184,0.5);" />
+                        </li>
+                    </ul>
+
+                    <p><strong>6.6 Sequence Diagrams</strong></p>
+                    <p>
+                        Sequence diagrams model <strong>time-ordered interactions</strong> between objects/components
+                        (controllers, services, database, external systems). For this project, important scenarios
+                        include student registration, user login, event creation, event registration, QR-based check-in,
+                        crowd prediction, notifications, and report generation.
+                    </p>
+                    <p>All sequence diagrams are stored under <code>diagrams/sequence/</code>:</p>
+                    <ul>
+                        <li>
+                            <strong>Student Registration Sequence Diagram</strong><br />
+                            <img src="diagrams/sequence/Student_Registration_Sequence.png" alt="Student Registration Sequence Diagram" style="max-width:100%; margin-top:0.35rem; border-radius:0.5rem; border:1px solid rgba(148,163,184,0.5);" />
+                        </li>
+                        <li>
+                            <strong>User Login Sequence Diagram</strong><br />
+                            <img src="diagrams/sequence/User_Login_Sequence.png" alt="User Login Sequence Diagram" style="max-width:100%; margin-top:0.35rem; border-radius:0.5rem; border:1px solid rgba(148,163,184,0.5);" />
+                        </li>
+                        <li>
+                            <strong>Event Creation Sequence Diagram</strong><br />
+                            <img src="diagrams/sequence/Event_Creation_Sequence.png" alt="Event Creation Sequence Diagram" style="max-width:100%; margin-top:0.35rem; border-radius:0.5rem; border:1px solid rgba(148,163,184,0.5);" />
+                        </li>
+                        <li>
+                            <strong>Event Registration Sequence Diagram</strong><br />
+                            <img src="diagrams/sequence/Event_Registration_Sequence.png" alt="Event Registration Sequence Diagram" style="max-width:100%; margin-top:0.35rem; border-radius:0.5rem; border:1px solid rgba(148,163,184,0.5);" />
+                        </li>
+                        <li>
+                            <strong>Ticket Check-in (QR Scan) Sequence Diagram</strong><br />
+                            <img src="diagrams/sequence/Ticket_Checkin_Sequence.png" alt="Ticket Check-in Sequence Diagram" style="max-width:100%; margin-top:0.35rem; border-radius:0.5rem; border:1px solid rgba(148,163,184,0.5);" />
+                        </li>
+                        <li>
+                            <strong>Crowd Prediction Sequence Diagram</strong><br />
+                            <img src="diagrams/sequence/Crowd_Prediction_Sequence.png" alt="Crowd Prediction Sequence Diagram" style="max-width:100%; margin-top:0.35rem; border-radius:0.5rem; border:1px solid rgba(148,163,184,0.5);" />
+                        </li>
+                        <li>
+                            <strong>Venue Conflict Detection Sequence Diagram</strong><br />
+                            <img src="diagrams/sequence/Venue_Conflict_Detection_Sequence.png" alt="Venue Conflict Detection Sequence Diagram" style="max-width:100%; margin-top:0.35rem; border-radius:0.5rem; border:1px solid rgba(148,163,184,0.5);" />
+                        </li>
+                        <li>
+                            <strong>Notification Sending Sequence Diagram</strong><br />
+                            <img src="diagrams/sequence/Notification_Sending_Sequence.png" alt="Notification Sending Sequence Diagram" style="max-width:100%; margin-top:0.35rem; border-radius:0.5rem; border:1px solid rgba(148,163,184,0.5);" />
+                        </li>
+                        <li>
+                            <strong>Feedback Submission Sequence Diagram</strong><br />
+                            <img src="diagrams/sequence/Feedback_Submission_Sequence.png" alt="Feedback Submission Sequence Diagram" style="max-width:100%; margin-top:0.35rem; border-radius:0.5rem; border:1px solid rgba(148,163,184,0.5);" />
+                        </li>
+                        <li>
+                            <strong>Dashboard Data Sequence Diagram</strong><br />
+                            <img src="diagrams/sequence/Dashboard_Data_Sequence.png" alt="Dashboard Data Sequence Diagram" style="max-width:100%; margin-top:0.35rem; border-radius:0.5rem; border:1px solid rgba(148,163,184,0.5);" />
+                        </li>
+                    </ul>
+
+                    <p><strong>6.7 Entity Relationship Diagram (ERD)</strong></p>
+                    <p>
+                        The ERD shows the <strong>database structure</strong> for Ventixe Events, including entities such
+                        as User, Student, Event, Booking, Ticket, Venue, Feedback, Notification, Category,
+                        AttendanceRecord, PredictionHistory, and AuditLog, plus all relationships between them.
+                    </p>
+                    <p>
+                        Export the ERD as an image and save it in <code>New folder/erd/</code>:
+                    </p>
+                    <ul>
+                        <li>
+                            <strong>Overall System ERD</strong><br />
+                            <img src="diagrams/erd/Entity_Relationship_Diagram.png" alt="Campus Event Management &amp; Crowd Prediction System ERD" style="max-width:100%; margin-top:0.35rem; border-radius:0.5rem; border:1px solid rgba(148,163,184,0.5);" />
+                        </li>
+                    </ul>
+
+                    <p><strong>6.8 Class Diagram</strong></p>
+                    <p>
+                        The UML Class Diagram represents the <strong>object-oriented design</strong> of the system
+                        (classes like User, Student, Admin, Event, Booking, Ticket, Venue, CrowdPredictionService,
+                        NotificationService, FeedbackService, ReportService, AuthService, etc., along with attributes,
+                        methods, and relationships).
+                    </p>
+                    <p>Save the main class diagram in <code>New folder/class/</code>:</p>
+                    <ul>
+                        <li>
+                            <strong>System Class Diagram</strong><br />
+                            <img src="diagrams/class/class_diagram.png" alt="Campus Event Management &amp; Crowd Prediction System Class Diagram" style="max-width:100%; margin-top:0.35rem; border-radius:0.5rem; border:1px solid rgba(148,163,184,0.5);" />
+                        </li>
+                    </ul>
+
+                    <p><strong>6.9 Data Flow Diagrams (DFD – Level 0, 1, 2)</strong></p>
+                    <p>
+                        Data Flow Diagrams show <strong>how data moves</strong> between external entities, processes, and
+                        data stores in the system.
+                    </p>
+                    <ul>
+                        <li><strong>DFD Level 0 (Context Diagram):</strong> single process “Campus Event Management &amp;
+                            Crowd Prediction System” with external entities (Student, Organizer, Admin, Staff, Email
+                            System, ML Engine).</li>
+                        <li><strong>DFD Level 1:</strong> main processes such as User Management, Event Management,
+                            Registration &amp; Booking, Ticket Management, Crowd Prediction, Notification, and Reporting.</li>
+                        <li><strong>DFD Level 2:</strong> decomposed processes for User Management, Event Management,
+                            Registration &amp; Booking, and Crowd Prediction.</li>
+                    </ul>
+                    <p>All DFDs are stored under <code>diagrams/dfd/</code>:</p>
+                    <ul>
+                        <li>
+                            <strong>DFD Level 0 – Context Diagram</strong><br />
+                            <img src="diagrams/dfd/dfd_level0_context.png" alt="DFD Level 0 Context Diagram" style="max-width:100%; margin-top:0.35rem; border-radius:0.5rem; border:1px solid rgba(148,163,184,0.5);" />
+                        </li>
+                        <li>
+                            <strong>DFD Level 1 – Main Processes</strong><br />
+                            <img src="diagrams/dfd/dfd_level1_main.png" alt="DFD Level 1 Main Processes" style="max-width:100%; margin-top:0.35rem; border-radius:0.5rem; border:1px solid rgba(148,163,184,0.5);" />
+                        </li>
+                        <li>
+                            <strong>DFD Level 2 – Crowd Prediction</strong><br />
+                            <img src="diagrams/dfd/DFD_Level2_CrowdPrediction.png" alt="DFD Level 2 Detailed Processes" style="max-width:100%; margin-top:0.35rem; border-radius:0.5rem; border:1px solid rgba(148,163,184,0.5);" />
+                        </li>
+                        <li>
+                            <strong>DFD Level 2 – Registration</strong><br />
+                            <img src="diagrams/dfd/DFD_Level2_Registration.png" alt="DFD Level 2 Detailed Processes" style="max-width:100%; margin-top:0.35rem; border-radius:0.5rem; border:1px solid rgba(148,163,184,0.5);" />
+                        </li>
+                    </ul>
+
+                    <p><strong>6.10 Swimlane Diagrams</strong></p>
+                    <p>
+                        Swimlane diagrams show <strong>who is responsible</strong> for each step in a process by dividing
+                        the flow into lanes (Student, System, Ticket Service, Email Service, Staff, Admin, etc.). They
+                        are especially useful for processes like event registration, booking approval, ticket check-in,
+                        notification sending, and report generation.
+                    </p>
+                    
+                    <ul>
+                        <li>
+                            <strong>Event Registration Swimlane Diagram</strong><br />
+                            <img src="diagrams/swimlane/Swimlane_Event_Registration.png" alt="Event Registration Swimlane Diagram" style="max-width:100%; margin-top:0.35rem; border-radius:0.5rem; border:1px solid rgba(148,163,184,0.5);" />
+                        </li>
+                        <li>
+                            <strong>Booking Approval Swimlane Diagram</strong><br />
+                            <img src="diagrams/swimlane/Swimlane_Booking_Approval.png" alt="Booking Approval Swimlane Diagram" style="max-width:100%; margin-top:0.35rem; border-radius:0.5rem; border:1px solid rgba(148,163,184,0.5);" />
+                        </li>
+                        <li>
+                            <strong>Ticket Check-in Swimlane Diagram</strong><br />
+                            <img src="diagrams/swimlane/Swimlane_Ticket_Checkin.png" alt="Ticket Check-in Swimlane Diagram" style="max-width:100%; margin-top:0.35rem; border-radius:0.5rem; border:1px solid rgba(148,163,184,0.5);" />
+                        </li>
+                        <li>
+                            <strong>Crowd Prediction Swimlane Diagram</strong><br />
+                            <img src="diagrams/swimlane/Swimlane_Crowd_Prediction.png" alt="Crowd Prediction Swimlane Diagram" style="max-width:100%; margin-top:0.35rem; border-radius:0.5rem; border:1px solid rgba(148,163,184,0.5);" />
+                        </li>
+                        <li>
+                            <strong>Notification Sending Swimlane Diagram</strong><br />
+                            <img src="diagrams/swimlane/Swimlane_Notification_Sending.png" alt="Notification Sending Swimlane Diagram" style="max-width:100%; margin-top:0.35rem; border-radius:0.5rem; border:1px solid rgba(148,163,184,0.5);" />
+                        </li>
+                        <li>
+                            <strong>Venue Conflict Detection Swimlane Diagram</strong><br />
+                            <img src="diagrams/swimlane/Swimlane_Venue_Conflict.png" alt="Venue Conflict Detection Swimlane Diagram" style="max-width:100%; margin-top:0.35rem; border-radius:0.5rem; border:1px solid rgba(148,163,184,0.5);" />
+                        </li>
+                    </ul>
+
+                    <p><strong>6.11 State Diagrams</strong></p>
+                    <p>
+                        State diagrams describe the <strong>lifecycle of key entities</strong> such as Event
+                        (Draft → Active → Postponed/Completed/Cancelled), Booking (Pending → Confirmed →
+                        Attended/Cancelled/No-Show), Ticket (Valid → Used/Revoked/Expired), User Account
+                        (Unverified → Active → Suspended/Deactivated), and Notification (Pending → Sent/Failed/Read).
+                    </p>
+                    <p>All state diagrams are stored under <code>diagrams/state/</code>:</p>
+                    <ul>
+                        <li>
+                            <strong>Event Lifecycle State Diagram</strong><br />
+                            <img src="diagrams/state/State_Event_Lifecycle.png" alt="Event Lifecycle State Diagram" style="max-width:100%; margin-top:0.35rem; border-radius:0.5rem; border:1px solid rgba(148,163,184,0.5);" />
+                        </li>
+                        <li>
+                            <strong>Booking Lifecycle State Diagram</strong><br />
+                            <img src="diagrams/state/State_Booking_Lifecycle.png" alt="Booking Lifecycle State Diagram" style="max-width:100%; margin-top:0.35rem; border-radius:0.5rem; border:1px solid rgba(148,163,184,0.5);" />
+                        </li>
+                        <li>
+                            <strong>Ticket Lifecycle State Diagram</strong><br />
+                            <img src="diagrams/state/State_Ticket_Lifecycle.png" alt="Ticket Lifecycle State Diagram" style="max-width:100%; margin-top:0.35rem; border-radius:0.5rem; border:1px solid rgba(148,163,184,0.5);" />
+                        </li>
+                        <li>
+                            <strong>User Account Lifecycle State Diagram</strong><br />
+                            <img src="diagrams/state/State_User_Account_Lifecycle.png" alt="User Account Lifecycle State Diagram" style="max-width:100%; margin-top:0.35rem; border-radius:0.5rem; border:1px solid rgba(148,163,184,0.5);" />
+                        </li>
+                        <li>
+                            <strong>Notification Lifecycle State Diagram</strong><br />
+                            <img src="diagrams/state/State_Notification_Lifecycle.png" alt="Notification Lifecycle State Diagram" style="max-width:100%; margin-top:0.35rem; border-radius:0.5rem; border:1px solid rgba(148,163,184,0.5);" />
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Further sections (Requirements, Diagrams, Interfaces, Implementation, etc.)
+             will be appended below in later iterations. -->
+    </main>
+</div>
+</body>
+</html>
